@@ -23,6 +23,7 @@
                         <router-link
                             :to="`/blog/${blog.id}/edit`"
                             class="btn btn-primary btn-sm"
+                            @click.prevent="setBlog(blog)"
                         >
                             <i class="fa-solid fa-pen"></i>
                         </router-link>
@@ -36,6 +37,8 @@
                 </tr>
             </tbody>
         </table>
+
+
     </div>
 </template>
 
@@ -47,33 +50,33 @@ export default {
     data() {
         return {
             blogs: [],
+            blog : null
         };
     },
 
     methods: {
-        getBlogs() {
-            axios
+        async getBlogs() {
+                await axios
                 .get("/api/blogs")
                 .then((res) => res.data)
-                .then((json) => (this.blogs = json.data));
+                .then((json) => {
+                    this.blogs = json.data;
+                });
         },
 
-        deleteBlog(id) {
+         deleteBlog(id) {
             Swal.fire({
                 title: "Are you sure?",
                 text: "You won't be able to revert this!",
                 icon: "warning",
                 showCancelButton: true,
-                confirmButtonColor: "#3085d6",
-                cancelButtonColor: "#d33",
+                confirmButtonColor: "#d33",
+                cancelButtonColor: "#000",
                 confirmButtonText: "Yes, delete it!",
             }).then((result) => {
                 if (result.isConfirmed) {
-                    axios({
-                        method: "delete",
-                        url: `api/blogs/${id}`,
-                    }).then((res) => {
-
+                    axios.delete(`api/blogs/${id}`)
+                   .then((res) => {
                         this.blogs.shift();
                         const Toast = Swal.mixin({
                             toast: true,
@@ -95,20 +98,20 @@ export default {
 
                         Toast.fire({
                             icon: "success",
-                            title: 'Deleted Completed',
+                            title: "Deleted Completed",
                         });
                     });
                 }
             });
         },
+
+        setBlog(blog){
+            this.$root.blog = blog;
+        }
     },
 
-    mounted() {
-        this.getBlogs();
+    async mounted() {
+       await this.getBlogs();
     },
-    updated(){
-        this.getBlogs();
-
-    }
 };
 </script>
