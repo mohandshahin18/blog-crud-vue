@@ -13,6 +13,11 @@
             </ul>
         </nav>
 
+        <loader></loader>
+
         <router-view />
+
+
     </div>
 </template>
+

@@ -50,7 +50,8 @@ export default {
     data() {
         return {
             blogs: [],
-            blog : null
+            blog : null,
+            loading: true
         };
     },
 
@@ -77,7 +78,7 @@ export default {
                 if (result.isConfirmed) {
                     axios.delete(`api/blogs/${id}`)
                    .then((res) => {
-                        this.blogs.shift();
+                    document.getElementById(`row_${id}`).remove();
                         const Toast = Swal.mixin({
                             toast: true,
                             position: "top",
@@ -113,5 +114,9 @@ export default {
     async mounted() {
        await this.getBlogs();
     },
+
+
 };
 </script>
+
+

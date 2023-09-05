@@ -21,6 +21,7 @@ const router = createRouter({
         {
             name: "edit_blog",
             path: "/blog/:id/edit",
+            props : true,
             component: BlogEdit,
         },
         {
