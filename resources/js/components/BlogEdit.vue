@@ -5,7 +5,9 @@
             <div class="row">
                 <div class="mb-3 col-6">
                     <label for="">Title</label>
-                    <input type="text" class="form-control" v-model="blog.title"  name="" id="" />
+                    <input type="text" class="form-control" v-model="blog.title"  :class="{' is-invalid': errors?errors.title :  ''}" name="" id="" />
+                    <small v-if="errors.title" class="invalid-feedback"> {{ errors.title[0] }}</small>
+
                 </div>
                 <div class="mb-3 col-6">
                     <label for="">Image</label>
@@ -27,10 +29,14 @@
                         id=""
                         cols="30"
                         rows="4"
+                        :class="{' is-invalid': errors? errors.body : ''}"
                     ></textarea>
+                    <small v-if="errors.body" class="invalid-feedback"> {{ errors.body[0] }}</small>
+
                 </div>
             </div>
-            <button class="btn btn-primary px-4">Save</button>
+            <button class="btn btn-primary px-4 mx-2">Save</button>
+            <router-link to="/" class="btn btn-dark  px-4"  >Retunrn Back</router-link>
         </form>
     </div>
 </template>
@@ -45,6 +51,7 @@ export default {
         return {
             blog : "",
             image : "",
+            errors : ""
         };
     },
     methods: {
@@ -61,7 +68,7 @@ export default {
 
         handleFileChange(event){
             this.image = event.target.files[0];
-            this.blog.prev_img = URL.createObjectURL( this.image);
+            this.blog.prev_img = URL.createObjectURL(this.image);
 
         } ,
 
@@ -72,7 +79,12 @@ export default {
                 headers : {
                     'Content-Type' : 'multipart/form-data'
                 },
-                data: this.blog,
+                data: {
+                    title : this.blog.title,
+                    image : this.image,
+                    body : this.blog.body,
+                    _method : this.blog._method
+                },
             })
             .then((res) =>  {
                 this.$router.push({ path: '/' })
@@ -100,6 +112,9 @@ export default {
                             title: "Updated Successfully ",
                         });
             })
+            .catch((error) => {
+            this.errors = error.response.data.errors;
+          })
         },
     },
 

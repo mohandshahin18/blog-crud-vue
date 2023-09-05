@@ -22,10 +22,17 @@
                     <td>
                         <router-link
                             :to="`/blog/${blog.id}/edit`"
-                            class="btn btn-primary btn-sm"
+                            class="btn btn-primary btn-sm mx-1"
                             @click.prevent="setBlog(blog)"
                         >
                             <i class="fa-solid fa-pen"></i>
+                        </router-link>
+                        <router-link
+                            :to="`/blog/${blog.id}/show`"
+                            class="btn btn-primary btn-sm mx-1"
+                            @click.prevent="setBlog(blog)"
+                        >
+                            <i class="fa-solid fa-eye"></i>
                         </router-link>
                         <button
                             @click="deleteBlog(blog.id)"

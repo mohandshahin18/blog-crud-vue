@@ -48,7 +48,11 @@ class BlogController extends Controller
             ];
 
         } catch (\Exception $e) {
-            return $e->getMessage();
+            return [
+                'status' => false,
+                'message' => 'Reject',
+                'data' => $e->getMessage(),
+            ];
         }
     }
 
@@ -70,8 +74,12 @@ class BlogController extends Controller
     public function update(Request $request, string $id)
     {
 
+        $request->validate([
+            'title' => 'required|string',
+            'body' => 'required'
+        ]);
+
         $blog = Blog::findOrFail($id);
-        $data = $request->all();
         if($request->hasFile('image')){
             File::delete(public_path('images/'.$blog->image));
             $path = rand() . time() . $request->file('image')->getClientOriginalName();
@@ -89,7 +97,11 @@ class BlogController extends Controller
             ];
 
         } catch (\Exception $e) {
-            return  $e->getMessage();
+            return [
+                'status' => false,
+                'message' => 'Reject',
+                'data' => $e->getMessage(),
+            ];
         }
     }
 
@@ -110,7 +122,11 @@ class BlogController extends Controller
             ];
         }
         catch (\Exception $e) {
-            return  $e->getMessage();
+            return [
+                'status' => false,
+                'message' => 'Reject',
+                'data' => $e->getMessage(),
+            ];
         }
 
     }

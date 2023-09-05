@@ -37,7 +37,7 @@ export default{
             title : "",
             body : "",
             image : "",
-            errors : ''
+            errors : ""
         }
     },
 

@@ -3,6 +3,7 @@ import BlogList from "@/components/BlogList.vue";
 import BlogCreate from "@/components/BlogCreate.vue";
 import BlogEdit from "@/components/BlogEdit.vue";
 import notFound from "@/components/notFound.vue";
+import BlogSingle from "@/components/BlogSingle.vue";
 
 
 const router = createRouter({
@@ -21,8 +22,12 @@ const router = createRouter({
         {
             name: "edit_blog",
             path: "/blog/:id/edit",
-            props : true,
             component: BlogEdit,
+        },
+        {
+            name: "show_blog",
+            path: "/blog/:id/show",
+            component: BlogSingle,
         },
         {
             name : "notFound",
