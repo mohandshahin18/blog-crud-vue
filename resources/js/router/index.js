@@ -4,6 +4,7 @@ import BlogCreate from "@/components/BlogCreate.vue";
 import BlogEdit from "@/components/BlogEdit.vue";
 import notFound from "@/components/notFound.vue";
 import BlogSingle from "@/components/BlogSingle.vue";
+import Home from "@/components/Home.vue";
 
 
 const router = createRouter({
@@ -12,6 +13,11 @@ const router = createRouter({
         {
             name: "home",
             path: "/",
+            component: Home,
+        },
+        {
+            name: "all_blog",
+            path: "/blogs",
             component: BlogList,
         },
         {

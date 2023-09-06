@@ -23,14 +23,12 @@
                         <router-link
                             :to="`/blog/${blog.id}/edit`"
                             class="btn btn-primary btn-sm mx-1"
-                            @click.prevent="setBlog(blog)"
                         >
                             <i class="fa-solid fa-pen"></i>
                         </router-link>
                         <router-link
                             :to="`/blog/${blog.id}/show`"
                             class="btn btn-primary btn-sm mx-1"
-                            @click.prevent="setBlog(blog)"
                         >
                             <i class="fa-solid fa-eye"></i>
                         </router-link>
@@ -44,8 +42,6 @@
                 </tr>
             </tbody>
         </table>
-
-
     </div>
 </template>
 
@@ -57,22 +53,22 @@ export default {
     data() {
         return {
             blogs: [],
-            blog : null,
-            loading: true
+            blog: null,
+            loading: true,
         };
     },
 
     methods: {
         async getBlogs() {
-                await axios
+            await axios
                 .get("/api/blogs")
                 .then((res) => res.data)
                 .then((json) => {
-                    this.blogs = json.data;
+                    this.blogs = json.data.reverse();
                 });
         },
 
-         deleteBlog(id) {
+        deleteBlog(id) {
             Swal.fire({
                 title: "Are you sure?",
                 text: "You won't be able to revert this!",
@@ -83,9 +79,8 @@ export default {
                 confirmButtonText: "Yes, delete it!",
             }).then((result) => {
                 if (result.isConfirmed) {
-                    axios.delete(`api/blogs/${id}`)
-                   .then((res) => {
-                    document.getElementById(`row_${id}`).remove();
+                    axios.delete(`api/blogs/${id}`).then((res) => {
+                        document.getElementById(`row_${id}`).remove();
                         const Toast = Swal.mixin({
                             toast: true,
                             position: "top",
@@ -112,18 +107,10 @@ export default {
                 }
             });
         },
-
-        setBlog(blog){
-            this.$root.blog = blog;
-        }
     },
 
     async mounted() {
-       await this.getBlogs();
+        await this.getBlogs();
     },
-
-
 };
 </script>
-
-

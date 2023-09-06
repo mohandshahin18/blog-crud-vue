@@ -120,6 +120,7 @@ export default {
 
    async mounted() {
         await this.getBlog();
+        // console.log(history.state.back);
     },
 };
 </script>
