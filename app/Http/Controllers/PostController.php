@@ -2,21 +2,23 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Blog;
+use App\Models\Post;
+use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\File;
 
-class BlogController extends Controller
+class PostController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
+        $posts = Post::with('user')->get();
+
         return [
-            'status' => true,
-            'message' => 'Done',
-            'data' => Blog::all(),
+            'stuats' => true,
+            'message' => "Done",
+            'data' =>$posts
         ];
     }
 
@@ -26,27 +28,20 @@ class BlogController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'title' => 'required|string',
-            'image' => 'required',
             'body' => 'required'
         ]);
 
-        $path = rand().time().$request->file('image')->getClientOriginalName();
-        $request->file('image')->move(public_path('images'), $path);
-
         try {
-           $blog= Blog::create([
-                'title'=>$request->title,
-                'image'=>$path,
-                'body'=>$request->body,
+            $post = Post::create([
+                'body' => $request->body,
+                'user_id' => 1,
             ]);
-
+            $post->load('user');
             return [
                 'status' => true,
                 'message' => 'Done',
-                'data' => $blog,
+                'data' => $post,
             ];
-
         } catch (\Exception $e) {
             return [
                 'status' => false,
@@ -61,21 +56,21 @@ class BlogController extends Controller
      */
     public function show(string $id)
     {
-        $blog = Blog::findOrFail($id);
-        if($blog){
+        $post = Post::findOrFail($id);
+
+        if ($post) {
             return [
-                'status' => true,
-                'message' => 'Done',
-                'data' => $blog,
+                'stuats' => true,
+                'message' => "Done",
+                'data' => $post,
             ];
-        }else{
+        } else {
             return [
-                'status' => true,
-                'message' => 'Done',
-                'data' => [],
+                'stuats' => true,
+                'message' => "Done",
+                'data' => $post,
             ];
         }
-
     }
 
     /**
@@ -83,30 +78,23 @@ class BlogController extends Controller
      */
     public function update(Request $request, string $id)
     {
-
         $request->validate([
-            'title' => 'required|string',
             'body' => 'required'
         ]);
 
-        $blog = Blog::findOrFail($id);
+
+        $post = Post::findOrFail($id);
         $data = $request->all();
-        if($request->hasFile('image')){
-            File::delete(public_path('images/'.$blog->image));
-            $path = rand() . time() . $request->file('image')->getClientOriginalName();
-            $request->file('image')->move(public_path('images'), $path);
-            $data['image'] = $path;
-        }
+
 
         try {
-          $blog->update($data);
+            $post->update($data);
 
             return [
                 'status' => true,
                 'message' => 'Done',
-                'data' => $blog,
+                'data' => $post,
             ];
-
         } catch (\Exception $e) {
             return [
                 'status' => false,
@@ -121,24 +109,21 @@ class BlogController extends Controller
      */
     public function destroy(string $id)
     {
-        try{
-            $blog = Blog::findOrFail($id);
-            File::delete(public_path('images/'.$blog->image));
-            $blog->delete();
+        try {
+            $post = Post::findOrFail($id);
+            $post->delete();
 
             return [
                 'status' => true,
                 'message' => 'Done',
                 'data' => [],
             ];
-        }
-        catch (\Exception $e) {
+        } catch (\Exception $e) {
             return [
                 'status' => false,
                 'message' => 'Reject',
                 'data' => $e->getMessage(),
             ];
         }
-
     }
 }

@@ -81,13 +81,13 @@ export default {
                 },
                 data: {
                     title : this.blog.title,
-                    image : this.image,
+                    image : this.image ? this.image : this.blog.image,
                     body : this.blog.body,
                     _method : this.blog._method
                 },
             })
             .then((res) =>  {
-                this.$router.push({ path: '/' })
+                this.$router.push({ path: '/blogs' })
 
                 const Toast = Swal.mixin({
                             toast: true,
@@ -121,6 +121,7 @@ export default {
    async mounted() {
         await this.getBlog();
         // console.log(history.state.back);
+        // console.log(this.blog.image);
     },
 };
 </script>
