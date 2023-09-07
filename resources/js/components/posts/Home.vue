@@ -166,6 +166,9 @@ export default {
             singleComment: [],
             user_id: null,
             post_id: null,
+            alertAudio: new Audio(
+                "/assets/like.mp3"
+            ),
         };
     },
     methods: {
@@ -185,6 +188,7 @@ export default {
                         const likeData = response.data.data;
                         if (likeData.like === 1) {
                             post.likes.push(likeData);
+                            this.alertAudio.play();
                         } else {
                             const indexToRemove = post.likes.findIndex(
                                 (like) =>
@@ -321,6 +325,7 @@ export default {
 }
 .container {
     background-color: #f0f2f5 !important;
+    padding-bottom: 100px;
     .post {
         width: 50%;
         margin: 40px auto;
@@ -426,6 +431,9 @@ export default {
                 }
             }
         }
+
+
     }
 }
+
 </style>
