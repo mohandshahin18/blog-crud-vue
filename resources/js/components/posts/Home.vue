@@ -1,7 +1,6 @@
 <template>
     <div class="container px-5">
-
-        <AddPost :posts="posts" :user_id="user_id"/>
+        <AddPost :posts="posts" :user_id="user_id" />
         <div
             class="post"
             v-for="post in posts"
@@ -10,15 +9,12 @@
         >
             <div class="header">
                 <div class="avatar-name">
-                    <img
-                        :src="post.user.avatar_url"
-                        class="avatar"
-                        alt=""
-                    />
+                    <img :src="post.user.avatar_url" class="avatar" alt="" />
                     <div>
                         <p class="name">{{ post.user.name }}</p>
-                    <span class="time">{{ this.moment(post.created_at).fromNow()
-                     }}</span>
+                        <span class="time">{{
+                            this.moment(post.created_at).fromNow()
+                        }}</span>
                     </div>
                 </div>
 
@@ -64,12 +60,23 @@
             </div>
 
             <div class="divider my-2"></div>
-            <div class="commentForm my-2"  v-if="showComment && post.id === post_id">
-                <AddComment :post_id="post.id" :user_id=" user_id" :posts="posts"/>
-
+            <div
+                class="commentForm my-2"
+                v-if="showComment && post.id === post_id"
+            >
+                <AddComment
+                    :post_id="post.id"
+                    :user_id="user_id"
+                    :posts="posts"
+                />
             </div>
 
-            <div class="comments my-3" v-for=" comment in post.comments" :key="comment.id">
+            <div
+                class="comments my-3"
+                v-for="comment in post.comments"
+                :key="comment.id"
+                :id="`row_${comment.id}_comment`"
+            >
                 <div class="header" style="padding-top: 10px">
                     <img
                         :src="comment.user.avatar_url"
@@ -79,14 +86,39 @@
 
                 <div class="info">
                     <p class="name">{{ comment.user.name }}</p>
-                    <p>
-                       {{ comment.body }}
-                    </p>
+                    <div class="data">
+                        <p>
+                            {{ comment.body }}
+                        </p>
+                        <span class="time"
+                            >{{ this.moment(comment.created_at).fromNow() }}
+                        </span>
+                    </div>
+                </div>
+                <div class="dropdown">
+                    <button type="button" data-bs-toggle="dropdown">
+                        <i class="fa-solid fa-ellipsis"></i>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li v-if="comment.user.id == user_id">
+                            <a
+                                class="dropdown-item"
+                                data-bs-toggle="modal"
+                                data-bs-target="#editComment"
+                                href="#"
+                                @click.prevent="setComment(comment)"
+                                >Edit</a
+                            >
+                        </li>
+                        <li>
+                            <a class="dropdown-item" @click.prevent="deleteComment(comment.id)" href="#">Delete</a>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>
-        <EditPost :singlePost="singlePost"/>
-
+        <EditPost :singlePost="singlePost" />
+        <EditComment :singleComment="singleComment" />
     </div>
 </template>
 
@@ -96,12 +128,14 @@ import Swal from "sweetalert2";
 import EditPost from "./EditPost.vue";
 import AddPost from "./AddPost.vue";
 import AddComment from "../comments/AddComment.vue";
+import EditComment from "../comments/EditComment.vue";
 
 export default {
-    components :{
+    components: {
         EditPost,
         AddPost,
         AddComment,
+        EditComment,
     },
     data() {
         return {
@@ -109,9 +143,10 @@ export default {
             liked: false,
             likes: 0,
             posts: [],
-            singlePost : [],
-            user_id : null ,
-            post_id : null ,
+            singlePost: [],
+            singleComment: [],
+            user_id: null,
+            post_id: null,
         };
     },
     methods: {
@@ -137,10 +172,8 @@ export default {
                 .then((res) => res.data)
                 .then((json) => {
                     this.posts = json.data.reverse();
-                    // console.log(this.posts);
                 });
         },
-
 
         deletePost(id) {
             Swal.fire({
@@ -181,15 +214,57 @@ export default {
                 }
             });
         },
-        setPost(post){
+
+        deleteComment(id) {
+            Swal.fire({
+                title: "Are you sure?",
+                text: "You won't be able to revert this!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#d33",
+                cancelButtonColor: "#000",
+                confirmButtonText: "Yes, delete it!",
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    axios.delete(`api/comments/${id}`).then((res) => {
+                        document.getElementById(`row_${id}_comment`).remove();
+                        const Toast = Swal.mixin({
+                            toast: true,
+                            position: "top",
+                            showConfirmButton: false,
+                            timer: 2000,
+                            timerProgressBar: false,
+                            didOpen: (toast) => {
+                                toast.addEventListener(
+                                    "mouseenter",
+                                    Swal.stopTimer
+                                );
+                                toast.addEventListener(
+                                    "mouseleave",
+                                    Swal.resumeTimer
+                                );
+                            },
+                        });
+
+                        Toast.fire({
+                            icon: "success",
+                            title: "Deleted Completed",
+                        });
+                    });
+                }
+            });
+        },
+        setPost(post) {
             this.singlePost = post;
         },
-
+        setComment(comment) {
+            this.singleComment = comment;
+        },
     },
 
     mounted() {
         this.getPosts();
-        this.user_id = user_id
+        this.user_id = user_id;
     },
 };
 </script>
@@ -227,11 +302,11 @@ export default {
                 display: flex;
                 gap: 10px;
                 justify-content: center;
-                .name{
+                .name {
                     font-weight: 500;
                     margin-bottom: unset !important;
                 }
-                .time{
+                .time {
                     font-size: 14px;
                     color: #65676b;
                 }
@@ -285,6 +360,22 @@ export default {
                 border-radius: 8px;
                 p {
                     font-size: 14px;
+                    margin-bottom: 0;
+                }
+                .data {
+                    .time {
+                        font-size: 12px;
+                        color: #65676b;
+                    }
+                }
+            }
+            .dropdown {
+                button {
+                    background: unset;
+                    border: unset;
+                    i {
+                        color: #65676b;
+                    }
                 }
             }
         }

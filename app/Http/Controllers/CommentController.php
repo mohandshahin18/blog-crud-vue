@@ -67,7 +67,29 @@ class CommentController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $request->validate([
+            'body' => 'required'
+        ]);
+
+
+        $comment = Comment::findOrFail($id);
+        $data = $request->all();
+
+
+        try {
+            $comment->update($data);
+            return [
+                'status' => true,
+                'message' => 'Done',
+                'data' => $comment,
+            ];
+        } catch (\Exception $e) {
+            return [
+                'status' => false,
+                'message' => 'Reject',
+                'data' => $e->getMessage(),
+            ];
+        }
     }
 
     /**
@@ -75,6 +97,21 @@ class CommentController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        try {
+            $comment = Comment::findOrFail($id);
+            $comment->delete();
+
+            return [
+                'status' => true,
+                'message' => 'Done',
+                'data' => [],
+            ];
+        } catch (\Exception $e) {
+            return [
+                'status' => false,
+                'message' => 'Reject',
+                'data' => $e->getMessage(),
+            ];
+        }
     }
 }
