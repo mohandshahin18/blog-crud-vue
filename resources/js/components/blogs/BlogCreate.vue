@@ -56,7 +56,7 @@ export default{
                 },
             })
             .then((res) =>  {
-                this.$router.push({ path: '/' })
+                this.$router.push({ path: '/blogs' })
             })
           .catch((error) => {
             this.errors = error.response.data.errors;

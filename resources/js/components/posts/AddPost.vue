@@ -23,7 +23,7 @@
 
 <script>
 export default {
-    props :['posts'],
+    props :['posts','user_id'],
     data() {
         return {
             body: "",
@@ -36,6 +36,7 @@ export default {
                 url: "/api/posts",
                 data: {
                     body: this.body,
+                    user_id: this.user_id,
                 },
             })
                 .then((res) => res.data)
@@ -45,5 +46,6 @@ export default {
                 });
         },
     },
+
 };
 </script>

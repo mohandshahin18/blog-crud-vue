@@ -43,8 +43,19 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
+    protected $appends = [
+        'avatar_url',
+    ];
 
     public function posts() {
         return $this->hasMany(Post::class);
+    }
+
+    public function comments() {
+        return $this->hasMany(Comment::class);
+    }
+
+    public function getAvatarUrlAttribute(){
+        return 'https://ui-avatars.com/api/?background=random&name='.$this->name ;
     }
 }

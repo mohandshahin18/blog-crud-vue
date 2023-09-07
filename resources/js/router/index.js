@@ -1,10 +1,10 @@
 import { createRouter, createWebHistory } from "vue-router";
-import BlogList from "@/components/BlogList.vue";
-import BlogCreate from "@/components/BlogCreate.vue";
-import BlogEdit from "@/components/BlogEdit.vue";
+import BlogList from "@/components/blogs/BlogList.vue";
+import BlogCreate from "@/components/blogs/BlogCreate.vue";
+import BlogEdit from "@/components/blogs/BlogEdit.vue";
+import BlogSingle from "@/components/blogs/BlogSingle.vue";
 import notFound from "@/components/notFound.vue";
-import BlogSingle from "@/components/BlogSingle.vue";
-import Home from "@/components/Home.vue";
+import Home from "@/components/posts/Home.vue";
 
 
 const router = createRouter({

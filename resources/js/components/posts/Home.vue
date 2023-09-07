@@ -1,7 +1,7 @@
 <template>
     <div class="container px-5">
 
-        <AddPost :posts="posts"/>
+        <AddPost :posts="posts" :user_id="user_id"/>
         <div
             class="post"
             v-for="post in posts"
@@ -11,7 +11,7 @@
             <div class="header">
                 <div class="avatar-name">
                     <img
-                        :src="`/images/143140922416939292432021_10_14_07_32_IMG_7378.JPG`"
+                        :src="post.user.avatar_url"
                         class="avatar"
                         alt=""
                     />
@@ -58,36 +58,29 @@
                     {{ likes == 0 ? "" : likes }}
                     <i class="fa-solid fa-thumbs-up"></i>Like</span
                 >
-                <span @click="toggleComment()"
+                <span @click="toggleComment(post.id)"
                     ><i class="fa-solid fa-comment"></i>Comment</span
                 >
             </div>
 
             <div class="divider my-2"></div>
-            <div class="commentForm my-2" v-if="showComment">
-                <form action="">
-                    <input
-                        class="form-control"
-                        placeholder="Add new comment"
-                        type="text"
-                        autofocus
-                    />
-                </form>
+            <div class="commentForm my-2"  v-if="showComment && post.id === post_id">
+                <AddComment :post_id="post.id" :user_id=" user_id" :posts="posts"/>
+
             </div>
 
-            <div class="comments my-3">
+            <div class="comments my-3" v-for=" comment in post.comments" :key="comment.id">
                 <div class="header" style="padding-top: 10px">
                     <img
-                        :src="`/images/143140922416939292432021_10_14_07_32_IMG_7378.JPG`"
+                        :src="comment.user.avatar_url"
                         class="avatar avatarComment"
                     />
                 </div>
 
                 <div class="info">
-                    <p class="name">mohanad</p>
+                    <p class="name">{{ comment.user.name }}</p>
                     <p>
-                        Lorem ipsum dolor, sit amet consectetur adipisicing
-                        elit. Corrupti odio perferendis vero nihil animi esse.
+                       {{ comment.body }}
                     </p>
                 </div>
             </div>
@@ -100,13 +93,15 @@
 <script>
 import axios from "axios";
 import Swal from "sweetalert2";
-import EditPost from "./posts/EditPost.vue";
-import AddPost from "./posts/AddPost.vue";
+import EditPost from "./EditPost.vue";
+import AddPost from "./AddPost.vue";
+import AddComment from "../comments/AddComment.vue";
 
 export default {
     components :{
         EditPost,
         AddPost,
+        AddComment,
     },
     data() {
         return {
@@ -114,12 +109,15 @@ export default {
             liked: false,
             likes: 0,
             posts: [],
-            singlePost : []
+            singlePost : [],
+            user_id : null ,
+            post_id : null ,
         };
     },
     methods: {
-        toggleComment() {
+        toggleComment(id) {
             this.showComment = true;
+            this.post_id = id;
         },
         toggleLike() {
             this.liked = !this.liked;
@@ -139,6 +137,7 @@ export default {
                 .then((res) => res.data)
                 .then((json) => {
                     this.posts = json.data.reverse();
+                    // console.log(this.posts);
                 });
         },
 
@@ -190,7 +189,7 @@ export default {
 
     mounted() {
         this.getPosts();
-
+        this.user_id = user_id
     },
 };
 </script>
@@ -221,7 +220,6 @@ export default {
         .header {
             display: flex;
             justify-content: space-between;
-            align-items: center;
             gap: 10px;
             margin-bottom: 10px;
 

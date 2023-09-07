@@ -121,7 +121,6 @@ export default {
    async mounted() {
         await this.getBlog();
         // console.log(history.state.back);
-        // console.log(this.blog.image);
     },
 };
 </script>

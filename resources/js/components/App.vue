@@ -1,5 +1,5 @@
 <template>
-    <div class="container my-5">
+    <div class="container mt-0  my-5">
 
         <nav-bar />
         <loader></loader>

@@ -5,20 +5,24 @@ namespace App\Http\Controllers;
 use App\Models\Post;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class PostController extends Controller
 {
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $posts = Post::with('user')->get();
+        $posts = Post::with('user')->with(['comments' => function ($builder) {
+            $builder->with('user');
+        }])->get();
 
         return [
             'stuats' => true,
             'message' => "Done",
-            'data' =>$posts
+            'data' => $posts
         ];
     }
 
@@ -30,11 +34,12 @@ class PostController extends Controller
         $request->validate([
             'body' => 'required'
         ]);
+        // dd(Auth::id());
 
         try {
             $post = Post::create([
                 'body' => $request->body,
-                'user_id' => 1,
+                'user_id' => $request->user_id,
             ]);
             $post->load('user');
             return [
@@ -89,7 +94,6 @@ class PostController extends Controller
 
         try {
             $post->update($data);
-
             return [
                 'status' => true,
                 'message' => 'Done',
