@@ -55,6 +55,10 @@ class User extends Authenticatable
         return $this->hasMany(Comment::class);
     }
 
+     public function likes(){
+        return $this->hasMany(Like::class);
+    }
+
     public function getAvatarUrlAttribute(){
         return 'https://ui-avatars.com/api/?background=random&name='.$this->name ;
     }

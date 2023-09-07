@@ -18,7 +18,7 @@
                     </div>
                 </div>
 
-                <div class="dropdown">
+                <div class="dropdown" v-if="post.user.id == user_id">
                     <button type="button" data-bs-toggle="dropdown">
                         <i class="fa-solid fa-ellipsis-vertical"></i>
                     </button>
@@ -50,8 +50,21 @@
             <div class="divider my-2"></div>
 
             <div class="content">
-                <span :class="{ liked: liked }" @click="toggleLike">
-                    {{ likes == 0 ? "" : likes }}
+                <span
+                    :class="{
+                        liked: post.likes.some(
+                            (like) => like.user_id == user_id
+                        ),
+                    }"
+                    @click="likePost(post)"
+                >
+                    {{
+                        post.likes
+                            ? post.likes.length > 0
+                                ? post.likes.length
+                                : ""
+                            : ""
+                    }}
                     <i class="fa-solid fa-thumbs-up"></i>Like</span
                 >
                 <span @click="toggleComment(post.id)"
@@ -60,6 +73,7 @@
             </div>
 
             <div class="divider my-2"></div>
+            <!-- add new comment -->
             <div
                 class="commentForm my-2"
                 v-if="showComment && post.id === post_id"
@@ -70,7 +84,7 @@
                     :posts="posts"
                 />
             </div>
-
+            <!-- comments -->
             <div
                 class="comments my-3"
                 v-for="comment in post.comments"
@@ -95,7 +109,7 @@
                         </span>
                     </div>
                 </div>
-                <div class="dropdown">
+                <div class="dropdown comment-dropdown">
                     <button type="button" data-bs-toggle="dropdown">
                         <i class="fa-solid fa-ellipsis"></i>
                     </button>
@@ -111,7 +125,12 @@
                             >
                         </li>
                         <li>
-                            <a class="dropdown-item" @click.prevent="deleteComment(comment.id)" href="#">Delete</a>
+                            <a
+                                class="dropdown-item"
+                                @click.prevent="deleteComment(comment.id)"
+                                href="#"
+                                >Delete</a
+                            >
                         </li>
                     </ul>
                 </div>
@@ -154,14 +173,30 @@ export default {
             this.showComment = true;
             this.post_id = id;
         },
-        toggleLike() {
-            this.liked = !this.liked;
-            if (this.liked) {
-                this.likes++;
-            } else {
-                this.likes--;
-            }
+
+        async likePost(post) {
+            await axios
+                .post(`/api/like/${post.id}`, {
+                    like_s: 1,
+                    user_id: this.user_id,
+                })
+                .then((response) => {
+                    if (response.status === 200) {
+                        const likeData = response.data.data;
+                        if (likeData.like === 1) {
+                            post.likes.push(likeData);
+                        } else {
+                            const indexToRemove = post.likes.findIndex(
+                                (like) =>
+                                like.user_id === this.user_id
+                            );
+                            post.likes.splice(indexToRemove, 1);
+
+                        }
+                    }
+                });
         },
+
         moment(time) {
             return moment(time);
         },
@@ -172,6 +207,9 @@ export default {
                 .then((res) => res.data)
                 .then((json) => {
                     this.posts = json.data.reverse();
+                    this.likedPosts = json.data.filter((post) =>
+                        post.likes.includes(this.user_id)
+                    );
                 });
         },
 
@@ -376,6 +414,15 @@ export default {
                     i {
                         color: #65676b;
                     }
+                }
+            }
+            .comment-dropdown {
+                display: none;
+                position: relative;
+            }
+            &:hover {
+                .comment-dropdown {
+                    display: block;
                 }
             }
         }

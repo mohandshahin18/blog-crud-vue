@@ -1,10 +1,11 @@
 <?php
 
-use App\Http\Controllers\BlogController;
-use App\Http\Controllers\CommentController;
-use App\Http\Controllers\PostController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\BlogController;
+use App\Http\Controllers\LikeController;
+use App\Http\Controllers\PostController;
+use App\Http\Controllers\CommentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,3 +26,5 @@ Route::apiResource('blogs', BlogController::class);
 Route::apiResource('posts', PostController::class);
 Route::apiResource('comments', CommentController::class);
 Route::post('comments/{id}', [CommentController::class , 'store']);
+Route::post('like/{id}', [LikeController::class, 'like']);
+

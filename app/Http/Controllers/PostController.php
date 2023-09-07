@@ -15,7 +15,7 @@ class PostController extends Controller
      */
     public function index()
     {
-        $posts = Post::with('user')->with(['comments' => function ($builder) {
+        $posts = Post::with('user')->with('likes')->with(['comments' => function ($builder) {
             $builder->with('user');
         }])->get();
 
@@ -42,6 +42,7 @@ class PostController extends Controller
                 'user_id' => $request->user_id,
             ]);
             $post->load('user');
+            $post->load('likes');
             return [
                 'status' => true,
                 'message' => 'Done',
