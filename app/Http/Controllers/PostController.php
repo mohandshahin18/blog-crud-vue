@@ -17,7 +17,7 @@ class PostController extends Controller
     {
         $posts = Post::with('user')->with('likes')->with(['comments' => function ($builder) {
             $builder->with('user');
-        }])->get();
+        }])->latest('id')->get();
 
         return [
             'stuats' => true,

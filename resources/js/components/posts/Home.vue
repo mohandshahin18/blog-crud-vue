@@ -91,7 +91,7 @@
                 :key="comment.id"
                 :id="`row_${comment.id}_comment`"
             >
-                <div class="header" style="padding-top: 10px">
+                <div class="header" :style="`padding-top: 10px`">
                     <img
                         :src="comment.user.avatar_url"
                         class="avatar avatarComment"
@@ -159,16 +159,13 @@ export default {
     data() {
         return {
             showComment: false,
-            liked: false,
             likes: 0,
             posts: [],
             singlePost: [],
             singleComment: [],
             user_id: null,
             post_id: null,
-            alertAudio: new Audio(
-                "/assets/like.mp3"
-            ),
+            alertAudio: new Audio("/assets/like.mp3"),
         };
     },
     methods: {
@@ -190,11 +187,9 @@ export default {
                             post.likes.push(likeData);
                             this.alertAudio.play();
                         } else {
-                            const indexToRemove = post.likes.findIndex(
-                                (like) =>
-                                like.user_id === this.user_id
-                            );
-                            post.likes.splice(indexToRemove, 1);
+
+                            post.likes = post.likes.filter((like) => like.user_id != response.data.data.user_id);
+
 
                         }
                     }
@@ -210,10 +205,7 @@ export default {
                 .get("/api/posts")
                 .then((res) => res.data)
                 .then((json) => {
-                    this.posts = json.data.reverse();
-                    this.likedPosts = json.data.filter((post) =>
-                        post.likes.includes(this.user_id)
-                    );
+                    this.posts = json.data;
                 });
         },
 
@@ -431,9 +423,6 @@ export default {
                 }
             }
         }
-
-
     }
 }
-
 </style>
