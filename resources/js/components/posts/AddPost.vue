@@ -23,10 +23,12 @@
 
 <script>
 export default {
-    props :['posts','user_id'],
+    props: ["posts", "user_id"],
     data() {
         return {
             body: "",
+            newPost: new Audio("/assets/new-post.wav"),
+
         };
     },
     methods: {
@@ -38,14 +40,17 @@ export default {
                     body: this.body,
                     user_id: this.user_id,
                 },
+                headers: {
+                    "Authorization": "bearer token"
+                },
             })
                 .then((res) => res.data)
                 .then((json) => {
                     this.posts.unshift(json.data);
+                    this.newPost.play();
                     this.body = "";
                 });
         },
     },
-
 };
 </script>
