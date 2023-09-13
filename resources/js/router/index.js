@@ -5,6 +5,7 @@ import BlogEdit from "@/components/blogs/BlogEdit.vue";
 import BlogSingle from "@/components/blogs/BlogSingle.vue";
 import notFound from "@/components/notFound.vue";
 import Home from "@/components/posts/Home.vue";
+import Login from "@/components/auth/Login.vue";
 
 
 const router = createRouter({
@@ -39,8 +40,24 @@ const router = createRouter({
             name : "notFound",
             path: "/:path(.*)",
             component: notFound,
+        },
+        {
+            name : "login",
+            path: "/login",
+            component: Login,
         }
     ],
 });
-
+router.beforeEach((to, from, next) => {
+    if (localStorage.getItem("token") != null) {
+        next();
+    } else {
+        if (to.name === "login") {
+            next();
+        } else {
+            // Redirect to login page with a page reload
+            window.location.href = '/login';
+        }
+    }
+});
 export default router;

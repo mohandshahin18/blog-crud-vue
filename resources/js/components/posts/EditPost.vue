@@ -9,7 +9,7 @@
     >
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
-                <form action="" >
+                <form action="">
                     <div class="modal-body">
                         <div class="row">
                             <div class="col-md-12">
@@ -31,7 +31,11 @@
                     </div>
 
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" @click.prevent="editPost(singlePost.id)">
+                        <button
+                            type="button"
+                            class="btn btn-primary"
+                            @click.prevent="editPost(singlePost.id)"
+                        >
                             Edit
                         </button>
                     </div>
@@ -57,8 +61,10 @@ export default {
                     body: this.singlePost.body,
                     _method: "put",
                 },
+                headers: {
+                    Authorization: "Bearer " + localStorage.getItem("token"),
+                },
             }).then((res) => {
-
                 const Toast = Swal.mixin({
                     toast: true,
                     position: "top",

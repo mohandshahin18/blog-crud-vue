@@ -27,8 +27,13 @@ Route::middleware('auth')->group(function () {
 });
 
 
-require __DIR__.'/auth.php';
+// require __DIR__.'/auth.php';
+
+Route::get('/login', function () {
+    return view('auth/login');
+});
+
 
 Route::get('/{path?}', function () {
     return view('welcome');
-})->where('path','.*')->middleware('auth') ;
+})->where('path','.*');

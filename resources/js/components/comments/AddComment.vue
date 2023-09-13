@@ -33,6 +33,9 @@ export default {
                     user_id: this.user_id,
                     post_id: this.post_id,
                 },
+                headers: {
+                    Authorization: "Bearer " + localStorage.getItem("token"),
+                },
             })
                 .then((res) => res.data)
                 .then((json) => {

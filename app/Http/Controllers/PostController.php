@@ -39,7 +39,7 @@ class PostController extends Controller
         try {
             $post = Post::create([
                 'body' => $request->body,
-                'user_id' => $request->user_id,
+                'user_id' => Auth::id(),
             ]);
             $post->load('user');
             $post->load('likes');

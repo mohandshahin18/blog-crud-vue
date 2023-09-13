@@ -176,10 +176,19 @@ export default {
 
         async likePost(post) {
             await axios
-                .post(`/api/like/${post.id}`, {
-                    like_s: 1,
-                    user_id: this.user_id,
-                })
+                .post(
+                    `/api/like/${post.id}`,
+                    {
+                        like_s: 1,
+                        user_id: this.user_id,
+                    },
+                    {
+                        headers: {
+                            Authorization:
+                                "Bearer " + localStorage.getItem("token"),
+                        },
+                    }
+                )
                 .then((response) => {
                     if (response.status === 200) {
                         const likeData = response.data.data;
@@ -187,10 +196,10 @@ export default {
                             post.likes.push(likeData);
                             this.alertAudio.play();
                         } else {
-
-                            post.likes = post.likes.filter((like) => like.user_id != response.data.data.user_id);
-
-
+                            post.likes = post.likes.filter(
+                                (like) =>
+                                    like.user_id != response.data.data.user_id
+                            );
                         }
                     }
                 });
@@ -202,7 +211,12 @@ export default {
 
         getPosts() {
             axios
-                .get("/api/posts")
+                .get("/api/posts", {
+                    headers: {
+                        Authorization:
+                            "Bearer " + localStorage.getItem("token"),
+                    },
+                })
                 .then((res) => res.data)
                 .then((json) => {
                     this.posts = json.data;
@@ -220,31 +234,38 @@ export default {
                 confirmButtonText: "Yes, delete it!",
             }).then((result) => {
                 if (result.isConfirmed) {
-                    axios.delete(`api/posts/${id}`).then((res) => {
-                        document.getElementById(`row_${id}`).remove();
-                        const Toast = Swal.mixin({
-                            toast: true,
-                            position: "top",
-                            showConfirmButton: false,
-                            timer: 2000,
-                            timerProgressBar: false,
-                            didOpen: (toast) => {
-                                toast.addEventListener(
-                                    "mouseenter",
-                                    Swal.stopTimer
-                                );
-                                toast.addEventListener(
-                                    "mouseleave",
-                                    Swal.resumeTimer
-                                );
+                    axios
+                        .delete(`api/posts/${id}`, {
+                            headers: {
+                                Authorization:
+                                    "Bearer " + localStorage.getItem("token"),
                             },
-                        });
+                        })
+                        .then((res) => {
+                            document.getElementById(`row_${id}`).remove();
+                            const Toast = Swal.mixin({
+                                toast: true,
+                                position: "top",
+                                showConfirmButton: false,
+                                timer: 2000,
+                                timerProgressBar: false,
+                                didOpen: (toast) => {
+                                    toast.addEventListener(
+                                        "mouseenter",
+                                        Swal.stopTimer
+                                    );
+                                    toast.addEventListener(
+                                        "mouseleave",
+                                        Swal.resumeTimer
+                                    );
+                                },
+                            });
 
-                        Toast.fire({
-                            icon: "success",
-                            title: "Deleted Completed",
+                            Toast.fire({
+                                icon: "success",
+                                title: "Deleted Completed",
+                            });
                         });
-                    });
                 }
             });
         },
@@ -260,31 +281,40 @@ export default {
                 confirmButtonText: "Yes, delete it!",
             }).then((result) => {
                 if (result.isConfirmed) {
-                    axios.delete(`api/comments/${id}`).then((res) => {
-                        document.getElementById(`row_${id}_comment`).remove();
-                        const Toast = Swal.mixin({
-                            toast: true,
-                            position: "top",
-                            showConfirmButton: false,
-                            timer: 2000,
-                            timerProgressBar: false,
-                            didOpen: (toast) => {
-                                toast.addEventListener(
-                                    "mouseenter",
-                                    Swal.stopTimer
-                                );
-                                toast.addEventListener(
-                                    "mouseleave",
-                                    Swal.resumeTimer
-                                );
+                    axios
+                        .delete(`api/comments/${id}`, {
+                            headers: {
+                                Authorization:
+                                    "Bearer " + localStorage.getItem("token"),
                             },
-                        });
+                        })
+                        .then((res) => {
+                            document
+                                .getElementById(`row_${id}_comment`)
+                                .remove();
+                            const Toast = Swal.mixin({
+                                toast: true,
+                                position: "top",
+                                showConfirmButton: false,
+                                timer: 2000,
+                                timerProgressBar: false,
+                                didOpen: (toast) => {
+                                    toast.addEventListener(
+                                        "mouseenter",
+                                        Swal.stopTimer
+                                    );
+                                    toast.addEventListener(
+                                        "mouseleave",
+                                        Swal.resumeTimer
+                                    );
+                                },
+                            });
 
-                        Toast.fire({
-                            icon: "success",
-                            title: "Deleted Completed",
+                            Toast.fire({
+                                icon: "success",
+                                title: "Deleted Completed",
+                            });
                         });
-                    });
                 }
             });
         },
@@ -298,7 +328,7 @@ export default {
 
     mounted() {
         this.getPosts();
-        this.user_id = user_id;
+        this.user_id = localStorage.getItem("user_id");
     },
 };
 </script>

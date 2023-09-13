@@ -28,7 +28,6 @@ export default {
         return {
             body: "",
             newPost: new Audio("/assets/new-post.wav"),
-
         };
     },
     methods: {
@@ -41,7 +40,7 @@ export default {
                     user_id: this.user_id,
                 },
                 headers: {
-                    "Authorization": "bearer token"
+                    Authorization: "Bearer " + localStorage.getItem("token"),
                 },
             })
                 .then((res) => res.data)

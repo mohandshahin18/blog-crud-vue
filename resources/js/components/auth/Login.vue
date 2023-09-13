@@ -1,5 +1,5 @@
 <template>
-    <form class="login100-form validate-form">
+    <form class="login100-form validate-form" @submit.prevent="login">
         <span class="login100-form-title"> Member Login </span>
 
         <div
@@ -11,6 +11,8 @@
                 type="text"
                 name="email"
                 placeholder="Email"
+                v-model="email"
+
             />
             <span class="focus-input100"></span>
             <span class="symbol-input100">
@@ -27,6 +29,7 @@
                 type="password"
                 name="pass"
                 placeholder="Password"
+                v-model="password"
             />
             <span class="focus-input100"></span>
             <span class="symbol-input100">
@@ -56,9 +59,33 @@
 export default {
     data() {
         return {
-            emil: "",
-            pssword: "",
+            email: "",
+            password: "",
+            errors : "",
+
         };
+    },
+    methods: {
+        login() {
+            axios({
+                method: "post",
+                url: "/api/login",
+                data: {
+                    email: this.email,
+                    password: this.password,
+                }
+            })
+                .then((res) => res)
+                .then((json) => {
+                    localStorage.setItem('token',json.data.access_token)
+                    localStorage.setItem('user_id',json.data.user.id)
+                    window.location.href = '/'; 
+
+                }).catch((error) => {
+                    this.errors  = error.response.data ;
+          })
+
+        },
     },
 };
 </script>

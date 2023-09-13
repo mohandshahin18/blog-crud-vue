@@ -31,7 +31,6 @@
 				</div>
 
 				<div id="login">
-                    <form-login />
                 </div>
 			</div>
 		</div>

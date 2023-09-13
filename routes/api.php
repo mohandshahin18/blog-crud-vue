@@ -6,6 +6,7 @@ use App\Http\Controllers\BlogController;
 use App\Http\Controllers\LikeController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\Api\AuthController;
 
 /*
 |--------------------------------------------------------------------------
@@ -22,9 +23,20 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::apiResource('blogs', BlogController::class);
-Route::apiResource('posts', PostController::class);
-Route::apiResource('comments', CommentController::class);
-Route::post('comments/{id}', [CommentController::class , 'store']);
-Route::post('like/{id}', [LikeController::class, 'like']);
 
+
+
+
+Route::post('/login', [AuthController::class, 'login']);
+Route::prefix('/')->middleware('auth:api')->group(function () {
+    Route::post('register', [AuthController::class, 'register']);
+    Route::post('logout', [AuthController::class, 'logout']);
+    Route::post('refresh', [AuthController::class, 'refresh']);
+    Route::get('user-profile', [AuthController::class, 'userProfile']);
+    Route::apiResource('posts', PostController::class);
+
+    Route::apiResource('blogs', BlogController::class);
+    Route::apiResource('comments', CommentController::class);
+    Route::post('comments/{id}', [CommentController::class, 'store']);
+    Route::post('like/{id}', [LikeController::class, 'like']);
+});
