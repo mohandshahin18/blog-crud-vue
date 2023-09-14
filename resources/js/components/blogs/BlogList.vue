@@ -61,7 +61,11 @@ export default {
     methods: {
         async getBlogs() {
             await axios
-                .get("/api/blogs")
+                .get("/api/blogs",{
+                    headers: {
+                    'Authorization': "Bearer " + localStorage.getItem("token"),
+                },
+                })
                 .then((res) => res.data)
                 .then((json) => {
                     this.blogs = json.data.reverse();

@@ -5,9 +5,10 @@
             <div class="row">
                 <div class="mb-3 col-6">
                     <label for="">Title</label>
-                    <input type="text" class="form-control" v-model="blog.title"  :class="{' is-invalid': errors?errors.title :  ''}" name="" id="" />
-                    <small v-if="errors.title" class="invalid-feedback"> {{ errors.title[0] }}</small>
-
+                    <input type="text" class="form-control" v-model="blog.title"   :class="{ ' is-invalid': errors ? errors.title : '' }" name="" id="" />
+                    <small v-if="errors.title" class="invalid-feedback">
+                        {{ errors.title[0] }}</small
+                    >
                 </div>
                 <div class="mb-3 col-6">
                     <label for="">Image</label>
@@ -57,7 +58,11 @@ export default {
     methods: {
        async getBlog() {
            await axios
-                .get(`/api/blogs/${this.$route.params.id}`)
+                .get(`/api/blogs/${this.$route.params.id}`,{
+                    headers: {
+                    'Authorization': "Bearer " + localStorage.getItem("token"),
+                },
+                })
                 .then((res) => res.data)
                 .then((json) => {
                     this.blog = json.data
@@ -77,7 +82,9 @@ export default {
                 method: "post",
                 url: `/api/blogs/${id}`,
                 headers : {
-                    'Content-Type' : 'multipart/form-data'
+                    'Content-Type' : 'multipart/form-data',
+                    'Authorization': "Bearer " + localStorage.getItem("token"),
+
                 },
                 data: {
                     title : this.blog.title,

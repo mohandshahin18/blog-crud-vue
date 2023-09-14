@@ -79,7 +79,7 @@ export default {
                 .then((json) => {
                     localStorage.setItem('token',json.data.access_token)
                     localStorage.setItem('user_id',json.data.user.id)
-                    window.location.href = '/'; 
+                    window.location.href = '/';
 
                 }).catch((error) => {
                     this.errors  = error.response.data ;

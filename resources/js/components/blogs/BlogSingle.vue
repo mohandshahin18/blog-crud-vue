@@ -23,7 +23,11 @@ export default {
     methods: {
         async getBlog() {
             await axios
-                .get(`/api/blogs/${this.$route.params.id}`)
+                .get(`/api/blogs/${this.$route.params.id}`,{
+                    headers: {
+                    'Authorization': "Bearer " + localStorage.getItem("token"),
+                },
+                })
                 .then((res) => res.data)
                 .then((json) => {
                     this.blog = json.data;
