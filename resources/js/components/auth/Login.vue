@@ -12,7 +12,6 @@
                 name="email"
                 placeholder="Email"
                 v-model="email"
-
             />
             <span class="focus-input100"></span>
             <span class="symbol-input100">
@@ -61,8 +60,7 @@ export default {
         return {
             email: "",
             password: "",
-            errors : "",
-
+            errors: "",
         };
     },
     methods: {
@@ -73,18 +71,18 @@ export default {
                 data: {
                     email: this.email,
                     password: this.password,
-                }
+                },
             })
-                .then((res) => res)
+                .then((res) => res.data)
                 .then((json) => {
-                    localStorage.setItem('token',json.data.access_token)
-                    localStorage.setItem('user_id',json.data.user.id)
-                    window.location.href = '/';
+                    localStorage.setItem("token", json.data.token);
+                    localStorage.setItem("user_id", json.data.user_id);
 
-                }).catch((error) => {
-                    this.errors  = error.response.data ;
-          })
-
+                    window.location.href = "/";
+                })
+                .catch((error) => {
+                    this.errors = error.response.data;
+                });
         },
     },
 };

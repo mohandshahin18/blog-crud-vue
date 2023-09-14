@@ -329,6 +329,9 @@ export default {
     mounted() {
         this.getPosts();
         this.user_id = localStorage.getItem("user_id");
+        setTimeout(() => {
+            localStorage.removeItem("token");
+        }, 3600000); //after 1 hour
     },
 };
 </script>
